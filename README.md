@@ -1,6 +1,6 @@
 # Launching Instruction
 
-1. Run the image `docker run --rm -it -v <launch_file_dir>:/home/ros/launch -e DISPLAY=unix$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix <image>`
+1. Run the image `docker run --net=host --privileged --rm -it -v <launch_file_dir>:/home/ros/launch -e DISPLAY=unix$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix <image>`
 2. Run ORB_SLAM2 `roslaunch launch/launch_file`
 
 ## Errors
