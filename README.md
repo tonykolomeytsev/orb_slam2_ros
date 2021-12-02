@@ -1,7 +1,14 @@
+# Tested on melodic
+`docker build --rm -f docker/melodic/Dockerfile -t orb_slam_2 .`
+
 # Launching Instruction
 
-1. Run the image `docker run --net=host --privileged --rm -it -v <launch_file_dir>:/home/ros/launch -e DISPLAY=unix$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix <image>`
-2. Run ORB_SLAM2 `roslaunch launch/launch_file`
+1. Run the image `docker run --net=host --privileged --rm -it -v $(pwd)/launch:/home/ros/launch -e DISPLAY=unix$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix orb_slam_2`
+2. Run ORB_SLAM2 `roslaunch launch/dfk_camera.launch`
+
+# Results are saved into 
+`/root/.ros/KeyFrameTrajectory.txt`
+
 
 ## Errors
 if 

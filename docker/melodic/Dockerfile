@@ -29,5 +29,5 @@ RUN catkin config \
     catkin build
 
 RUN echo "source /home/ros/devel/setup.bash" >> /$HOME/.bashrc
-
+COPY launch /home/ros/launch
 CMD "bash"
