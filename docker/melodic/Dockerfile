@@ -30,4 +30,7 @@ RUN catkin config \
 
 RUN echo "source /home/ros/devel/setup.bash" >> /$HOME/.bashrc
 COPY launch /home/ros/launch
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+
 CMD "bash"
