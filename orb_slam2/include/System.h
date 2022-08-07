@@ -135,6 +135,8 @@ public:
 
     std::vector<MapPoint*> GetAllMapPoints();
 
+    void SwitchPose(cv::Mat& Tcw);
+
 private:
     bool SetCallStackSize (const rlim_t kNewStackSize);
 
