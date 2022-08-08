@@ -2,7 +2,7 @@
   <node name="orb_slam2_mono" pkg="orb_slam2_ros"
       type="orb_slam2_ros_mono" output="screen">
 
-       <remap from="/camera/image_raw" to="/camera/image_cropped" />
+       <remap from="/camera/image_raw" to="/camera/image_raw" />
        <remap from="/camera/camera_info" to="/d400/color/camera_info" />
 
        <param name="publish_pointcloud" type="bool" value="true" />
