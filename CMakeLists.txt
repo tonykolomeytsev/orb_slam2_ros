@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 2.8.3)
-project(orb_slam2_ros)
+cmake_minimum_required(VERSION 3.1)
+project(orb_slam2_ros VERSION 1.0.0)
 
 IF(NOT CMAKE_BUILD_TYPE)
   SET(CMAKE_BUILD_TYPE Release)
@@ -115,6 +115,8 @@ orb_slam2/src/Sim3Solver.cc
 orb_slam2/src/Initializer.cc
 )
 add_dependencies (${PROJECT_NAME} g2o DBoW2)
+
+add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)
 
 target_link_libraries(${PROJECT_NAME}
 ${LIBS_ORBSLAM}
