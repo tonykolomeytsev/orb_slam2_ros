@@ -20,30 +20,31 @@
 
 #include "Map.h"
 
-#include<mutex>
+#include <mutex>
 
-namespace ORB_SLAM2
-{
+namespace ORB_SLAM2 {
 
-Map::Map():mnMaxKFid(0),mnBigChangeIdx(0)
+Map::Map()
+    : mnMaxKFid(0)
+    , mnBigChangeIdx(0)
 {
 }
 
-void Map::AddKeyFrame(KeyFrame *pKF)
+void Map::AddKeyFrame(KeyFrame* pKF)
 {
     unique_lock<mutex> lock(mMutexMap);
     mspKeyFrames.insert(pKF);
-    if(pKF->mnId>mnMaxKFid)
-        mnMaxKFid=pKF->mnId;
+    if (pKF->mnId > mnMaxKFid)
+        mnMaxKFid = pKF->mnId;
 }
 
-void Map::AddMapPoint(MapPoint *pMP)
+void Map::AddMapPoint(MapPoint* pMP)
 {
     unique_lock<mutex> lock(mMutexMap);
     mspMapPoints.insert(pMP);
 }
 
-void Map::EraseMapPoint(MapPoint *pMP)
+void Map::EraseMapPoint(MapPoint* pMP)
 {
     unique_lock<mutex> lock(mMutexMap);
     mspMapPoints.erase(pMP);
@@ -52,7 +53,7 @@ void Map::EraseMapPoint(MapPoint *pMP)
     // Delete the MapPoint
 }
 
-void Map::EraseKeyFrame(KeyFrame *pKF)
+void Map::EraseKeyFrame(KeyFrame* pKF)
 {
     unique_lock<mutex> lock(mMutexMap);
     mspKeyFrames.erase(pKF);
@@ -61,7 +62,7 @@ void Map::EraseKeyFrame(KeyFrame *pKF)
     // Delete the MapPoint
 }
 
-void Map::SetReferenceMapPoints(const vector<MapPoint *> &vpMPs)
+void Map::SetReferenceMapPoints(const vector<MapPoint*>& vpMPs)
 {
     unique_lock<mutex> lock(mMutexMap);
     mvpReferenceMapPoints = vpMPs;
@@ -82,13 +83,13 @@ int Map::GetLastBigChangeIdx()
 vector<KeyFrame*> Map::GetAllKeyFrames()
 {
     unique_lock<mutex> lock(mMutexMap);
-    return vector<KeyFrame*>(mspKeyFrames.begin(),mspKeyFrames.end());
+    return vector<KeyFrame*>(mspKeyFrames.begin(), mspKeyFrames.end());
 }
 
 vector<MapPoint*> Map::GetAllMapPoints()
 {
     unique_lock<mutex> lock(mMutexMap);
-    return vector<MapPoint*>(mspMapPoints.begin(),mspMapPoints.end());
+    return vector<MapPoint*>(mspMapPoints.begin(), mspMapPoints.end());
 }
 
 long unsigned int Map::MapPointsInMap()
@@ -117,10 +118,10 @@ long unsigned int Map::GetMaxKFid()
 
 void Map::clear()
 {
-    for(set<MapPoint*>::iterator sit=mspMapPoints.begin(), send=mspMapPoints.end(); sit!=send; sit++)
+    for (set<MapPoint*>::iterator sit = mspMapPoints.begin(), send = mspMapPoints.end(); sit != send; sit++)
         delete *sit;
 
-    for(set<KeyFrame*>::iterator sit=mspKeyFrames.begin(), send=mspKeyFrames.end(); sit!=send; sit++)
+    for (set<KeyFrame*>::iterator sit = mspKeyFrames.begin(), send = mspKeyFrames.end(); sit != send; sit++)
         delete *sit;
 
     mspMapPoints.clear();
@@ -131,17 +132,17 @@ void Map::clear()
 }
 
 // map serialization addition
-template<class Archive>
-void Map::serialize(Archive &ar, const unsigned int version)
+template <class Archive>
+void Map::serialize(Archive& ar, const unsigned int version)
 {
     // don't save mutex
     unique_lock<mutex> lock_MapUpdate(mMutexMapUpdate);
     unique_lock<mutex> lock_Map(mMutexMap);
-    ar & mspMapPoints;
-    ar & mvpKeyFrameOrigins;
-    ar & mspKeyFrames;
-    ar & mvpReferenceMapPoints;
-    ar & mnMaxKFid & mnBigChangeIdx;
+    ar& mspMapPoints;
+    ar& mvpKeyFrameOrigins;
+    ar& mspKeyFrames;
+    ar& mvpReferenceMapPoints;
+    ar& mnMaxKFid& mnBigChangeIdx;
 }
 template void Map::serialize(boost::archive::binary_iarchive&, const unsigned int);
 template void Map::serialize(boost::archive::binary_oarchive&, const unsigned int);

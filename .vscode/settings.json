@@ -4,9 +4,11 @@
     ],
     "files.associations": {
         "unordered_map": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "iostream": "cpp"
     },
     "python.analysis.extraPaths": [
         "/opt/ros/noetic/lib/python3/dist-packages"
-    ]
+    ],
+    "clang-format.executable": "/usr/bin/clang-format"
 }
