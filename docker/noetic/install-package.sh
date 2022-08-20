@@ -6,7 +6,7 @@ git clone --depth 1 https://github.com/tonykolomeytsev/orb_slam2_ros.git src/orb
 
 source /opt/ros/noetic/setup.bash
 catkin init
-catkin_make orb_slam2_ros
+catkin_make
 
 echo 'source /opt/ros/noetic/setup.bash' >> ~/.bashrc
 echo 'source /root/catkin_ws/devel/setup.bash' >> ~/.bashrc
