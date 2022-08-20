@@ -1,11 +1,9 @@
-# Launching Instruction
+# How to launch?
 
 1. Run the image `docker run --net=host --privileged --rm -it -v $(pwd)/launch:/home/ros/launch -e DISPLAY=unix$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix tonykolomeytsev/orb_slam2:ready`
 2. Run ORB_SLAM2 `roslaunch orb_slam2_ros dfk_camera.launch`
 
-# Results are saved into 
-`/root/.ros/KeyFrameTrajectory.txt`
-
+---
 
 ## Errors
 if 
