@@ -1,10 +1,7 @@
-# Tested on melodic
-`docker build --rm -f docker/melodic/Dockerfile -t orb_slam_2 .`
-
 # Launching Instruction
 
-1. Run the image `docker run --net=host --privileged --rm -it -v $(pwd)/launch:/home/ros/launch -e DISPLAY=unix$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix orb_slam_2`
-2. Run ORB_SLAM2 `roslaunch launch/dfk_camera.launch`
+1. Run the image `docker run --net=host --privileged --rm -it -v $(pwd)/launch:/home/ros/launch -e DISPLAY=unix$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix tonykolomeytsev/orb_slam2:ready`
+2. Run ORB_SLAM2 `roslaunch orb_slam2_ros dfk_camera.launch`
 
 # Results are saved into 
 `/root/.ros/KeyFrameTrajectory.txt`
@@ -137,11 +134,11 @@ source devel/setup.bash
 ```
 ## Suported cameras
 | Camera               | Mono                                                           | Stereo                                                           | RGBD                                                       |
-|----------------------|----------------------------------------------------------------|------------------------------------------------------------------|------------------------------------------------------------|
+| -------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------- |
 | Intel RealSense r200 | ``` roslaunch orb_slam2_ros orb_slam2_r200_mono.launch ```     | ``` roslaunch orb_slam2_ros orb_slam2_r200_stereo.launch ```     | ``` roslaunch orb_slam2_ros orb_slam2_r200_rgbd.launch ``` |
 | Intel RealSense d435 | ``` roslaunch orb_slam2_ros orb_slam2_d435_mono.launch ```     | -                                                                | ``` roslaunch orb_slam2_ros orb_slam2_d435_rgbd.launch ``` |
-| Mynteye S            | ```roslaunch orb_slam2_ros orb_slam2_mynteye_s_mono.launch ``` | ```roslaunch orb_slam2_ros orb_slam2_mynteye_s_stereo.launch ``` | -                                                          | 
-| Stereolabs ZED 2     | -                                                              | ```roslaunch orb_slam2_ros orb_slam2_zed2_stereo.launch ```      | -                                                          |                     |                                                            |                                                              |                                                            |
+| Mynteye S            | ```roslaunch orb_slam2_ros orb_slam2_mynteye_s_mono.launch ``` | ```roslaunch orb_slam2_ros orb_slam2_mynteye_s_stereo.launch ``` | -                                                          |
+| Stereolabs ZED 2     | -                                                              | ```roslaunch orb_slam2_ros orb_slam2_zed2_stereo.launch ```      | -                                                          |  |  |  |  |
 
 Use the command from the corresponding cell for your camera to launch orb_slam2_ros with the right parameters for your setup.
 
