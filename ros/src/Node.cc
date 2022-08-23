@@ -1,11 +1,13 @@
 #include "Node.h"
+#include "Tracking.h"
 
 #include <iostream>
 
 Node::Node(
     ORB_SLAM2::System::eSensor sensor,
-    ros::NodeHandle &node_handle,
-    image_transport::ImageTransport &image_transport) : image_transport_(image_transport)
+    ros::NodeHandle& node_handle,
+    image_transport::ImageTransport& image_transport)
+    : image_transport_(image_transport)
 {
     name_of_node_ = ros::this_node::getName();
     node_handle_ = node_handle;
@@ -55,14 +57,12 @@ void Node::Init()
     tfListener.reset(new tf2_ros::TransformListener(*tfBuffer));
 
     rendered_image_publisher_ = image_transport_.advertise(name_of_node_ + "/debug_image", 1);
-    if (publish_pointcloud_param_)
-    {
+    if (publish_pointcloud_param_) {
         map_points_publisher_ = node_handle_.advertise<sensor_msgs::PointCloud2>(name_of_node_ + "/map_points", 1);
     }
 
     // Enable publishing camera's pose as PoseStamped message
-    if (publish_pose_param_)
-    {
+    if (publish_pose_param_) {
         pose_publisher_ = node_handle_.advertise<geometry_msgs::PoseStamped>(name_of_node_ + "/pose", 1);
     }
 
@@ -73,30 +73,26 @@ void Node::Update()
 {
     cv::Mat position = orb_slam_->GetCurrentPosition();
 
-    if (!position.empty())
-    {
-        if (publish_tf_param_)
-        {
+    if (!position.empty()) {
+        if (publish_tf_param_) {
             PublishPositionAsTransform(position);
         }
 
-        if (publish_pose_param_)
-        {
+        if (publish_pose_param_) {
             PublishPositionAsPoseStamped(position);
         }
     }
 
     PublishRenderedImage(orb_slam_->DrawCurrentFrame());
 
-    if (publish_pointcloud_param_)
-    {
+    if (publish_pointcloud_param_) {
         PublishMapPoints(orb_slam_->GetAllMapPoints());
     }
 
     PublishGBAStatus(orb_slam_->isRunningGBA());
 }
 
-void Node::PublishMapPoints(std::vector<ORB_SLAM2::MapPoint *> map_points)
+void Node::PublishMapPoints(std::vector<ORB_SLAM2::MapPoint*> map_points)
 {
     sensor_msgs::PointCloud2 cloud = MapPointsToPointCloud(map_points);
     map_points_publisher_.publish(cloud);
@@ -110,17 +106,14 @@ tf2::Transform Node::TransformToTarget(tf2::Transform tf_in, std::string frame_i
     tf2::Transform tf_map2target;
 
     tf2::Stamped<tf2::Transform> transformStamped_temp;
-    try
-    {
+    try {
         // Get the transform from camera to target
         geometry_msgs::TransformStamped tf_msg = tfBuffer->lookupTransform(frame_in, frame_target, ros::Time(0));
         // Convert to tf2
         tf2::fromMsg(tf_msg, transformStamped_temp);
         tf_orig2target.setBasis(transformStamped_temp.getBasis());
         tf_orig2target.setOrigin(transformStamped_temp.getOrigin());
-    }
-    catch (tf2::TransformException &ex)
-    {
+    } catch (tf2::TransformException& ex) {
         ROS_WARN("%s", ex.what());
         // ros::Duration(1.0).sleep();
         tf_orig2target.setIdentity();
@@ -218,15 +211,15 @@ tf2::Transform Node::TransformFromMat(cv::Mat position_mat)
     translation = position_mat.rowRange(0, 3).col(3);
 
     tf2::Matrix3x3 tf_camera_rotation(rotation.at<float>(0, 0), rotation.at<float>(0, 1), rotation.at<float>(0, 2),
-                                      rotation.at<float>(1, 0), rotation.at<float>(1, 1), rotation.at<float>(1, 2),
-                                      rotation.at<float>(2, 0), rotation.at<float>(2, 1), rotation.at<float>(2, 2));
+        rotation.at<float>(1, 0), rotation.at<float>(1, 1), rotation.at<float>(1, 2),
+        rotation.at<float>(2, 0), rotation.at<float>(2, 1), rotation.at<float>(2, 2));
 
     tf2::Vector3 tf_camera_translation(translation.at<float>(0), translation.at<float>(1), translation.at<float>(2));
 
     // Coordinate transformation matrix from orb coordinate system to ros coordinate system
     const tf2::Matrix3x3 tf_orb_to_ros(0, 0, 1,
-                                       -1, 0, 0,
-                                       0, -1, 0);
+        -1, 0, 0,
+        0, -1, 0);
 
     // Transform from orb coordinate system to ros coordinate system on camera coordinates
     tf_camera_rotation = tf_orb_to_ros * tf_camera_rotation;
@@ -243,10 +236,9 @@ tf2::Transform Node::TransformFromMat(cv::Mat position_mat)
     return tf2::Transform(tf_camera_rotation, tf_camera_translation);
 }
 
-sensor_msgs::PointCloud2 Node::MapPointsToPointCloud(std::vector<ORB_SLAM2::MapPoint *> map_points)
+sensor_msgs::PointCloud2 Node::MapPointsToPointCloud(std::vector<ORB_SLAM2::MapPoint*> map_points)
 {
-    if (map_points.size() == 0)
-    {
+    if (map_points.size() == 0) {
         std::cout << "Map point vector is empty!" << std::endl;
     }
 
@@ -264,9 +256,8 @@ sensor_msgs::PointCloud2 Node::MapPointsToPointCloud(std::vector<ORB_SLAM2::MapP
     cloud.row_step = cloud.point_step * cloud.width;
     cloud.fields.resize(num_channels);
 
-    std::string channel_id[] = {"x", "y", "z"};
-    for (int i = 0; i < num_channels; i++)
-    {
+    std::string channel_id[] = { "x", "y", "z" };
+    for (int i = 0; i < num_channels; i++) {
         cloud.fields[i].name = channel_id[i];
         cloud.fields[i].offset = i * sizeof(float);
         cloud.fields[i].count = 1;
@@ -275,14 +266,12 @@ sensor_msgs::PointCloud2 Node::MapPointsToPointCloud(std::vector<ORB_SLAM2::MapP
 
     cloud.data.resize(cloud.row_step * cloud.height);
 
-    unsigned char *cloud_data_ptr = &(cloud.data[0]);
+    unsigned char* cloud_data_ptr = &(cloud.data[0]);
 
     float data_array[num_channels];
-    for (unsigned int i = 0; i < cloud.width; i++)
-    {
-        if (map_points.at(i)->nObs >= min_observations_per_point_)
-        {
-            data_array[0] = map_points.at(i)->GetWorldPos().at<float>(2);        // x. Do the transformation by just reading at the position of z instead of x
+    for (unsigned int i = 0; i < cloud.width; i++) {
+        if (map_points.at(i)->nObs >= min_observations_per_point_) {
+            data_array[0] = map_points.at(i)->GetWorldPos().at<float>(2); // x. Do the transformation by just reading at the position of z instead of x
             data_array[1] = -1.0 * map_points.at(i)->GetWorldPos().at<float>(0); // y. Do the transformation by just reading at the position of x instead of y
             data_array[2] = -1.0 * map_points.at(i)->GetWorldPos().at<float>(1); // z. Do the transformation by just reading at the position of y instead of z
             // TODO dont hack the transformation but have a central conversion function for MapPointsToPointCloud and TransformFromMat
@@ -294,13 +283,12 @@ sensor_msgs::PointCloud2 Node::MapPointsToPointCloud(std::vector<ORB_SLAM2::MapP
     return cloud;
 }
 
-void Node::ParamsChangedCallback(orb_slam2_ros::dynamic_reconfigureConfig &config, uint32_t level)
+void Node::ParamsChangedCallback(orb_slam2_ros::dynamic_reconfigureConfig& config, uint32_t level)
 {
     orb_slam_->EnableLocalizationOnly(config.localize_only);
     min_observations_per_point_ = config.min_observations_for_ros_map;
 
-    if (config.reset_map)
-    {
+    if (config.reset_map) {
         orb_slam_->Reset();
         config.reset_map = false;
     }
@@ -308,23 +296,20 @@ void Node::ParamsChangedCallback(orb_slam2_ros::dynamic_reconfigureConfig &confi
     orb_slam_->SetMinimumKeyFrames(config.min_num_kf_in_map);
 }
 
-bool Node::SaveMapSrv(orb_slam2_ros::SaveMap::Request &req, orb_slam2_ros::SaveMap::Response &res)
+bool Node::SaveMapSrv(orb_slam2_ros::SaveMap::Request& req, orb_slam2_ros::SaveMap::Response& res)
 {
     res.success = orb_slam_->SaveMap(req.name);
 
-    if (res.success)
-    {
+    if (res.success) {
         ROS_INFO_STREAM("Map was saved as " << req.name);
-    }
-    else
-    {
+    } else {
         ROS_ERROR("Map could not be saved.");
     }
 
     return res.success;
 }
 
-void Node::LoadOrbParameters(ORB_SLAM2::ORBParameters &parameters)
+void Node::LoadOrbParameters(ORB_SLAM2::ORBParameters& parameters)
 {
     // ORB SLAM configuration parameters
     node_handle_.param(name_of_node_ + "/camera_fps", parameters.maxFrames, 30);
@@ -338,22 +323,17 @@ void Node::LoadOrbParameters(ORB_SLAM2::ORBParameters &parameters)
     bool load_calibration_from_cam = false;
     node_handle_.param(name_of_node_ + "/load_calibration_from_cam", load_calibration_from_cam, false);
 
-    if (sensor_ == ORB_SLAM2::System::STEREO || sensor_ == ORB_SLAM2::System::RGBD)
-    {
+    if (sensor_ == ORB_SLAM2::System::STEREO || sensor_ == ORB_SLAM2::System::RGBD) {
         node_handle_.param(name_of_node_ + "/ThDepth", parameters.thDepth, static_cast<float>(35.0));
         node_handle_.param(name_of_node_ + "/depth_map_factor", parameters.depthMapFactor, static_cast<float>(1.0));
     }
 
-    if (load_calibration_from_cam)
-    {
+    if (load_calibration_from_cam) {
         ROS_INFO_STREAM("Listening for camera info on topic " << node_handle_.resolveName(camera_info_topic_));
         sensor_msgs::CameraInfo::ConstPtr camera_info = ros::topic::waitForMessage<sensor_msgs::CameraInfo>(camera_info_topic_, ros::Duration(1000.0));
-        if (camera_info == nullptr)
-        {
+        if (camera_info == nullptr) {
             ROS_WARN("Did not receive camera info before timeout, defaulting to launch file params.");
-        }
-        else
-        {
+        } else {
             parameters.fx = camera_info->K[0];
             parameters.fy = camera_info->K[4];
             parameters.cx = camera_info->K[2];
@@ -371,8 +351,7 @@ void Node::LoadOrbParameters(ORB_SLAM2::ORBParameters &parameters)
     }
 
     bool got_cam_calibration = true;
-    if (sensor_ == ORB_SLAM2::System::STEREO || sensor_ == ORB_SLAM2::System::RGBD)
-    {
+    if (sensor_ == ORB_SLAM2::System::STEREO || sensor_ == ORB_SLAM2::System::RGBD) {
         got_cam_calibration &= node_handle_.getParam(name_of_node_ + "/camera_baseline", parameters.baseline);
     }
 
@@ -386,8 +365,7 @@ void Node::LoadOrbParameters(ORB_SLAM2::ORBParameters &parameters)
     got_cam_calibration &= node_handle_.getParam(name_of_node_ + "/camera_p2", parameters.p2);
     got_cam_calibration &= node_handle_.getParam(name_of_node_ + "/camera_k3", parameters.k3);
 
-    if (!got_cam_calibration)
-    {
+    if (!got_cam_calibration) {
         ROS_ERROR("Failed to get camera calibration parameters from the launch file.");
         throw std::runtime_error("No cam calibration");
     }

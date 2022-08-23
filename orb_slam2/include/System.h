@@ -27,13 +27,9 @@
 #include <thread>
 #include <unistd.h>
 
-#include "FrameDrawer.h"
 #include "KeyFrameDatabase.h"
-#include "LocalMapping.h"
-#include "LoopClosing.h"
-#include "Map.h"
+#include "MapPoint.h"
 #include "ORBVocabulary.h"
-#include "Tracking.h"
 
 namespace ORB_SLAM2 {
 class FrameDrawer;

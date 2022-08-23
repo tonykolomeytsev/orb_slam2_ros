@@ -22,6 +22,7 @@
 #define TRACKING_H
 
 #include <opencv2/core/core.hpp>
+#include <opencv2/core/mat.hpp>
 #include <opencv2/features2d/features2d.hpp>
 #include <opencv2/imgproc/types_c.h>
 
@@ -29,15 +30,10 @@
 #include <sensor_msgs/CameraInfo.h>
 
 #include "Frame.h"
-#include "FrameDrawer.h"
 #include "Initializer.h"
 #include "KeyFrameDatabase.h"
-#include "LocalMapping.h"
-#include "LoopClosing.h"
-#include "Map.h"
 #include "ORBVocabulary.h"
 #include "ORBextractor.h"
-#include "System.h"
 
 #include <mutex>
 
@@ -214,6 +210,8 @@ protected:
     Frame mLastFrame;
     unsigned int mnLastKeyFrameId;
     unsigned int mnLastRelocFrameId;
+
+    cv::Mat lastSwitchedPose;
 
     // Motion Model
     cv::Mat mVelocity;

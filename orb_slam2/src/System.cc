@@ -24,6 +24,11 @@
 #include <thread>
 
 #include "Converter.h"
+#include "FrameDrawer.h"
+#include "LocalMapping.h"
+#include "LoopClosing.h"
+#include "Map.h"
+#include "Tracking.h"
 
 namespace ORB_SLAM2 {
 

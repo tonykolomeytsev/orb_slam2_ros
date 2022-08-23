@@ -19,6 +19,7 @@
  */
 
 #include "Tracking.h"
+#include "System.h"
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/features2d/features2d.hpp>
@@ -26,6 +27,7 @@
 #include "Converter.h"
 #include "FrameDrawer.h"
 #include "Initializer.h"
+#include "LocalMapping.h"
 #include "Map.h"
 #include "ORBmatcher.h"
 
@@ -53,7 +55,7 @@ Tracking::Tracking(System* pSys, ORBVocabulary* pVoc, FrameDrawer* pFrameDrawer,
     , mpFrameDrawer(pFrameDrawer)
     , mpMap(pMap)
     , mnLastRelocFrameId(0)
-    , mnMinimumKeyFrames(5)
+    , mnMinimumKeyFrames(3)
 {
     // Unpack all the parameters from the parameters struct (this replaces loading in a second configuration file)
     mMaxFrames = parameters.maxFrames;
@@ -1400,7 +1402,11 @@ void Tracking::SwitchPose(cv::Mat& pose)
     mnLastKeyFrameId = mCurrentFrame.mnId;
     mpLastKeyFrame = pKF;
 
-    mState = OK;
+    CreateNewKeyFrame();
+    CreateNewKeyFrame();
+    CreateNewKeyFrame();
+    //mState = LOST;
+    //mpSystem->Reset();
 }
 
 } // namespace ORB_SLAM

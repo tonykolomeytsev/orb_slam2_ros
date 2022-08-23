@@ -22,11 +22,10 @@
 #define MAP_H
 
 #include "BoostArchiver.h"
-#include "KeyFrame.h"
-#include "MapPoint.h"
 
 #include <mutex>
 #include <set>
+#include <vector>
 
 namespace ORB_SLAM2 {
 
@@ -56,7 +55,7 @@ public:
 
     void clear();
 
-    vector<KeyFrame*> mvpKeyFrameOrigins;
+    std::vector<KeyFrame*> mvpKeyFrameOrigins;
 
     std::mutex mMutexMapUpdate;
 

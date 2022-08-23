@@ -19,14 +19,12 @@
  */
 
 #include "LoopClosing.h"
-
-#include "Sim3Solver.h"
-
 #include "Converter.h"
-
-#include "Optimizer.h"
-
+#include "KeyFrameDatabase.h"
+#include "LocalMapping.h"
 #include "ORBmatcher.h"
+#include "Optimizer.h"
+#include "Sim3Solver.h"
 
 #include <mutex>
 #include <thread>

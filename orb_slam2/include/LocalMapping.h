@@ -23,9 +23,6 @@
 
 #include "KeyFrame.h"
 #include "KeyFrameDatabase.h"
-#include "LoopClosing.h"
-#include "Map.h"
-#include "Tracking.h"
 
 #include <mutex>
 

@@ -26,8 +26,6 @@
 #include <vector>
 
 #include "BoostArchiver.h"
-#include "Frame.h"
-#include "KeyFrame.h"
 #include "ORBVocabulary.h"
 
 #include <mutex>

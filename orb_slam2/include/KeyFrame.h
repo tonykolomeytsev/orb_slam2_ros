@@ -22,9 +22,6 @@
 #define KEYFRAME_H
 
 #include "BoostArchiver.h"
-#include "Frame.h"
-#include "KeyFrameDatabase.h"
-#include "MapPoint.h"
 #include "ORBVocabulary.h"
 #include "ORBextractor.h"
 #include "Thirdparty/DBoW2/DBoW2/BowVector.h"

@@ -22,9 +22,6 @@
 #define MAPPOINT_H
 
 #include "BoostArchiver.h"
-#include "Frame.h"
-#include "KeyFrame.h"
-#include "Map.h"
 
 #include <mutex>
 #include <opencv2/core/core.hpp>

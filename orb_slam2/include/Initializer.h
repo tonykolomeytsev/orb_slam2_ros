@@ -21,13 +21,15 @@
 #define INITIALIZER_H
 
 #include "Frame.h"
+
 #include <opencv2/opencv.hpp>
+#include <vector>
 
 namespace ORB_SLAM2 {
 
 // THIS IS THE INITIALIZER FOR MONOCULAR SLAM. NOT USED IN THE STEREO OR RGBD CASE.
 class Initializer {
-    typedef pair<int, int> Match;
+    typedef std::pair<int, int> Match;
 
 public:
     // Fix the reference frame
@@ -66,14 +68,14 @@ private:
     void DecomposeE(const cv::Mat& E, cv::Mat& R1, cv::Mat& R2, cv::Mat& t);
 
     // Keypoints from Reference Frame (Frame 1)
-    vector<cv::KeyPoint> mvKeys1;
+    std::vector<cv::KeyPoint> mvKeys1;
 
     // Keypoints from Current Frame (Frame 2)
-    vector<cv::KeyPoint> mvKeys2;
+    std::vector<cv::KeyPoint> mvKeys2;
 
     // Current Matches from Reference to Current
-    vector<Match> mvMatches12;
-    vector<bool> mvbMatched1;
+    std::vector<Match> mvMatches12;
+    std::vector<bool> mvbMatched1;
 
     // Calibration
     cv::Mat mK;

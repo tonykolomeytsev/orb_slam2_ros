@@ -1,12 +1,12 @@
 #include "MonoNode.h"
+#include "Converter.h"
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     ros::init(argc, argv, "Mono");
     ros::start();
 
-    if (argc > 1)
-    {
+    if (argc > 1) {
         ROS_WARN("Arguments supplied via command line are neglected.");
     }
 
@@ -27,8 +27,9 @@ int main(int argc, char **argv)
 
 MonoNode::MonoNode(
     ORB_SLAM2::System::eSensor sensor,
-    ros::NodeHandle &node_handle,
-    image_transport::ImageTransport &image_transport) : Node(sensor, node_handle, image_transport)
+    ros::NodeHandle& node_handle,
+    image_transport::ImageTransport& image_transport)
+    : Node(sensor, node_handle, image_transport)
 {
     image_subscriber = image_transport.subscribe("/camera/image_raw", 1, &MonoNode::ImageCallback, this);
     camera_info_topic_ = "/camera/camera_info";
@@ -39,15 +40,12 @@ MonoNode::~MonoNode()
 {
 }
 
-void MonoNode::ImageCallback(const sensor_msgs::ImageConstPtr &msg)
+void MonoNode::ImageCallback(const sensor_msgs::ImageConstPtr& msg)
 {
     cv_bridge::CvImageConstPtr cv_in_ptr;
-    try
-    {
+    try {
         cv_in_ptr = cv_bridge::toCvShare(msg);
-    }
-    catch (cv_bridge::Exception &e)
-    {
+    } catch (cv_bridge::Exception& e) {
         ROS_ERROR("cv_bridge exception: %s", e.what());
         return;
     }
@@ -59,12 +57,11 @@ void MonoNode::ImageCallback(const sensor_msgs::ImageConstPtr &msg)
     Update();
 }
 
-void MonoNode::SwitcherCallback(const geometry_msgs::Pose &msg)
+void MonoNode::SwitcherCallback(const geometry_msgs::Pose& msg)
 {
     geometry_msgs::Quaternion q = msg.orientation;
 
-    if (q.w > 1.0)
-    {
+    if (q.w > 1.0) {
         // if w>1 acos and sqrt will produce errors, this cant happen if quaternion is normalised
         q.x /= q.w;
         q.y /= q.w;
@@ -88,10 +85,10 @@ void MonoNode::SwitcherCallback(const geometry_msgs::Pose &msg)
     auto m21 = 2 * (yz + xw);
     auto m22 = 1 - 2 * (xx + yy);
 
-    double pose_data[16] = {m00, m01, m02, msg.position.x,
-                            m10, m11, m12, msg.position.y,
-                            m20, m21, m22, msg.position.z,
-                            0, 0, 0, 1};
+    double pose_data[16] = { m00, m01, m02, msg.position.x,
+        m10, m11, m12, msg.position.y,
+        m20, m21, m22, msg.position.z,
+        0, 0, 0, 1 };
     cv::Mat pose = cv::Mat(4, 4, CV_32F, pose_data);
 
     ROS_INFO_STREAM("Got a new pose for ORB SLAM2: " << pose);

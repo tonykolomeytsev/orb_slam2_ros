@@ -20,7 +20,10 @@
 
 #include "KeyFrame.h"
 #include "Converter.h"
+#include "KeyFrameDatabase.h"
+#include "Map.h"
 #include "ORBmatcher.h"
+
 #include <mutex>
 
 namespace ORB_SLAM2 {
