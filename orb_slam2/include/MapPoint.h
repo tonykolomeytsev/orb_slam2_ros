@@ -21,38 +21,35 @@
 #ifndef MAPPOINT_H
 #define MAPPOINT_H
 
-#include"KeyFrame.h"
-#include"Frame.h"
-#include"Map.h"
 #include "BoostArchiver.h"
+#include "Frame.h"
+#include "KeyFrame.h"
+#include "Map.h"
 
-#include<opencv2/core/core.hpp>
-#include<mutex>
+#include <mutex>
+#include <opencv2/core/core.hpp>
 
-namespace ORB_SLAM2
-{
+namespace ORB_SLAM2 {
 
 class KeyFrame;
 class Map;
 class Frame;
 
-
-class MapPoint
-{
+class MapPoint {
 public:
-    MapPoint(const cv::Mat &Pos, KeyFrame* pRefKF, Map* pMap);
-    MapPoint(const cv::Mat &Pos,  Map* pMap, Frame* pFrame, const int &idxF);
+    MapPoint(const cv::Mat& Pos, KeyFrame* pRefKF, Map* pMap);
+    MapPoint(const cv::Mat& Pos, Map* pMap, Frame* pFrame, const int& idxF);
 
-    void SetWorldPos(const cv::Mat &Pos);
+    void SetWorldPos(const cv::Mat& Pos);
     cv::Mat GetWorldPos();
 
     cv::Mat GetNormal();
     KeyFrame* GetReferenceKeyFrame();
 
-    std::map<KeyFrame*,size_t> GetObservations();
+    std::map<KeyFrame*, size_t> GetObservations();
     int Observations();
 
-    void AddObservation(KeyFrame* pKF,size_t idx);
+    void AddObservation(KeyFrame* pKF, size_t idx);
     void EraseObservation(KeyFrame* pKF);
 
     int GetIndexInKeyFrame(KeyFrame* pKF);
@@ -61,13 +58,14 @@ public:
     void SetBadFlag();
     bool isBad();
 
-    void Replace(MapPoint* pMP);    
+    void Replace(MapPoint* pMP);
     MapPoint* GetReplaced();
 
-    void IncreaseVisible(int n=1);
-    void IncreaseFound(int n=1);
+    void IncreaseVisible(int n = 1);
+    void IncreaseFound(int n = 1);
     float GetFoundRatio();
-    inline int GetFound(){
+    inline int GetFound()
+    {
         return mnFound;
     }
 
@@ -79,8 +77,8 @@ public:
 
     float GetMinDistanceInvariance();
     float GetMaxDistanceInvariance();
-    int PredictScale(const float &currentDist, KeyFrame*pKF);
-    int PredictScale(const float &currentDist, Frame* pF);
+    int PredictScale(const float& currentDist, KeyFrame* pKF);
+    int PredictScale(const float& currentDist, Frame* pF);
 
 public:
     long unsigned int mnId;
@@ -106,56 +104,55 @@ public:
     // Variables used by loop closing
     long unsigned int mnLoopPointForKF;
     long unsigned int mnCorrectedByKF;
-    long unsigned int mnCorrectedReference;    
+    long unsigned int mnCorrectedReference;
     cv::Mat mPosGBA;
     long unsigned int mnBAGlobalForKF;
 
-
     static std::mutex mGlobalMutex;
 
-protected:    
+protected:
+    // Position in absolute coordinates
+    cv::Mat mWorldPos;
 
-     // Position in absolute coordinates
-     cv::Mat mWorldPos;
+    // Keyframes observing the point and associated index in keyframe
+    std::map<KeyFrame*, size_t> mObservations;
 
-     // Keyframes observing the point and associated index in keyframe
-     std::map<KeyFrame*,size_t> mObservations;
+    // Mean viewing direction
+    cv::Mat mNormalVector;
 
-     // Mean viewing direction
-     cv::Mat mNormalVector;
+    // Best descriptor to fast matching
+    cv::Mat mDescriptor;
 
-     // Best descriptor to fast matching
-     cv::Mat mDescriptor;
+    // Reference KeyFrame
+    KeyFrame* mpRefKF;
 
-     // Reference KeyFrame
-     KeyFrame* mpRefKF;
+    // Tracking counters
+    int mnVisible;
+    int mnFound;
 
-     // Tracking counters
-     int mnVisible;
-     int mnFound;
+    // Bad flag (we do not currently erase MapPoint from memory)
+    bool mbBad;
+    MapPoint* mpReplaced;
 
-     // Bad flag (we do not currently erase MapPoint from memory)
-     bool mbBad;
-     MapPoint* mpReplaced;
+    // Scale invariance distances
+    float mfMinDistance;
+    float mfMaxDistance;
 
-     // Scale invariance distances
-     float mfMinDistance;
-     float mfMaxDistance;
+    Map* mpMap;
 
-     Map* mpMap;
+    std::mutex mMutexPos;
+    std::mutex mMutexFeatures;
 
-     std::mutex mMutexPos;
-     std::mutex mMutexFeatures;
-
-// map serialization addition
+    // map serialization addition
 public:
     // for serialization
     MapPoint();
+
 private:
     // serialize is recommended to be private
     friend class boost::serialization::access;
-    template<class Archive>
-    void serialize(Archive &ar, const unsigned int version);
+    template <class Archive>
+    void serialize(Archive& ar, const unsigned int version);
 };
 
 } //namespace ORB_SLAM

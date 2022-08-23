@@ -21,23 +21,19 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include "MapPoint.h"
-#include "KeyFrame.h"
 #include "BoostArchiver.h"
+#include "KeyFrame.h"
+#include "MapPoint.h"
 
-#include <set>
 #include <mutex>
+#include <set>
 
-
-
-namespace ORB_SLAM2
-{
+namespace ORB_SLAM2 {
 
 class MapPoint;
 class KeyFrame;
 
-class Map
-{
+class Map {
 public:
     Map();
 
@@ -45,7 +41,7 @@ public:
     void AddMapPoint(MapPoint* pMP);
     void EraseMapPoint(MapPoint* pMP);
     void EraseKeyFrame(KeyFrame* pKF);
-    void SetReferenceMapPoints(const std::vector<MapPoint*> &vpMPs);
+    void SetReferenceMapPoints(const std::vector<MapPoint*>& vpMPs);
     void InformNewBigChange();
     int GetLastBigChangeIdx();
 
@@ -54,7 +50,7 @@ public:
     std::vector<MapPoint*> GetReferenceMapPoints();
 
     long unsigned int MapPointsInMap();
-    long unsigned  KeyFramesInMap();
+    long unsigned KeyFramesInMap();
 
     long unsigned int GetMaxKFid();
 
@@ -80,12 +76,12 @@ protected:
 
     std::mutex mMutexMap;
 
-// map serialization addition
+    // map serialization addition
 private:
     // serialize is recommended to be private
     friend class boost::serialization::access;
-    template<class Archive>
-    void serialize(Archive &ar, const unsigned int version);
+    template <class Archive>
+    void serialize(Archive& ar, const unsigned int version);
 };
 
 } //namespace ORB_SLAM
